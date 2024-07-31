@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class FilterMemberBooksBorrowed {
-    @ApiProperty()
-    returnedAt?: Date | null
+  @ApiProperty()
+  returnedAt?: Date | null;
 }

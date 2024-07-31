@@ -35,12 +35,16 @@ export class MembersController {
   @ApiResponse(Member, true)
   async find(): Promise<DataResponse<Array<Member>>> {
     const members = await this.memberService.find();
-    const membersWithBorrowedBooks = members.map(member => {
-      const borrowedBooksCount = member.borrowedBooks.getItems().filter(
-        (borrow: MemberBooksBorrowed) => !borrow.returnedAt
-      ).length;
+    const membersWithBorrowedBooks = members.map((member) => {
+      const borrowedBooksCount = member.borrowedBooks
+        .getItems()
+        .filter((borrow: MemberBooksBorrowed) => !borrow.returnedAt).length;
 
-      const newMember: Member = { ...member, borrowedBooks: undefined, borrowedBooksCount: borrowedBooksCount }
+      const newMember: Member = {
+        ...member,
+        borrowedBooks: undefined,
+        borrowedBooksCount: borrowedBooksCount,
+      };
 
       return newMember;
     });
@@ -53,12 +57,15 @@ export class MembersController {
   async getById(@Param('id') id: string): Promise<DataResponse<Member>> {
     const member = await this.memberService.getById(id);
 
-    const borrowedBooksCount = member.borrowedBooks.getItems().filter(
-      borrow => !borrow.returnedAt
-    ).length;
+    const borrowedBooksCount = member.borrowedBooks
+      .getItems()
+      .filter((borrow) => !borrow.returnedAt).length;
 
-    const newMember: Member = { ...member, borrowedBooks: undefined, borrowedBooksCount: borrowedBooksCount }
- 
+    const newMember: Member = {
+      ...member,
+      borrowedBooks: undefined,
+      borrowedBooksCount: borrowedBooksCount,
+    };
 
     return new DataResponse(newMember);
   }

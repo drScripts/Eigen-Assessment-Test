@@ -8,7 +8,6 @@ import { InternalServerErrorException } from '../../shared/exceptions/InternalSe
 import { ErrorCode } from '../../shared/exceptions/ErrorCode';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { BookFilter } from './dto/book-filter.dto';
-import { MemberBooksBorrowed } from '../member-books-borrowed/entities/member-books-borrowed.entity';
 
 @Injectable()
 export class BooksService {
@@ -17,7 +16,7 @@ export class BooksService {
   constructor(
     private readonly bookRepository: BookRepository,
     private readonly em: EntityManager,
-  ) { }
+  ) {}
 
   async create(input: CreateBookDto): Promise<Book> {
     try {
@@ -41,9 +40,12 @@ export class BooksService {
 
   async getById(id: string): Promise<Book> {
     try {
-      const book: Book = await this.bookRepository.findOne({
-        id,
-      }, { populate: ["borrowedBooks"] });
+      const book: Book = await this.bookRepository.findOne(
+        {
+          id,
+        },
+        { populate: ['borrowedBooks'] },
+      );
 
       if (!book) {
         throw new NotFoundException(ErrorCode.BookNotFound);
@@ -68,14 +70,14 @@ export class BooksService {
   async update(id: string, input: UpdateBookDto): Promise<Book> {
     try {
       const book: Book = await this.bookRepository.findOne({
-        id
-      })
+        id,
+      });
       if (!book) {
-        throw new NotFoundException(ErrorCode.BookNotFound)
+        throw new NotFoundException(ErrorCode.BookNotFound);
       }
 
       if (input.stock) {
-        book.stock = input.stock
+        book.stock = input.stock;
       }
 
       if (input.author) {
@@ -114,9 +116,11 @@ export class BooksService {
         query.id = { $in: filter.ids };
       }
 
-      const books = await this.bookRepository.find(query, { populate: ['borrowedBooks'] })
+      const books = await this.bookRepository.find(query, {
+        populate: ['borrowedBooks'],
+      });
 
-      return books
+      return books;
     } catch (error) {
       this.#logger.fatal('failed to find', {
         error,

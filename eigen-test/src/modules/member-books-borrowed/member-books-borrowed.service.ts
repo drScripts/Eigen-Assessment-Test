@@ -21,15 +21,17 @@ export class MemberBooksBorrowedService {
     private readonly bookService: BooksService,
     private readonly memberService: MembersService,
     private readonly em: EntityManager,
-  ) { }
+  ) {}
 
-  async find(filter: FilterMemberBooksBorrowed): Promise<Array<MemberBooksBorrowed>> {
+  async find(
+    filter: FilterMemberBooksBorrowed,
+  ): Promise<Array<MemberBooksBorrowed>> {
     try {
       const response = await this.memberBooksBorrowedRepository.find({
-        returnedAt: filter.returnedAt
-      })
+        returnedAt: filter.returnedAt,
+      });
 
-      return response
+      return response;
     } catch (error) {
       this.#logger.fatal('failed to borrow book', {
         error,
@@ -65,7 +67,11 @@ export class MemberBooksBorrowedService {
         this.memberService.getById(memberId),
       ]);
 
-      if (memberBorrowedBooks.length >= 2 || books.length >= 2 || bookIds.length >= 2) {
+      if (
+        memberBorrowedBooks.length >= 2 ||
+        books.length >= 2 ||
+        bookIds.length >= 2
+      ) {
         throw new BadRequestException(null, ErrorCode.BorrowBookLimit);
       }
 
@@ -77,9 +83,9 @@ export class MemberBooksBorrowedService {
       }
 
       for (const book of books) {
-        const borrowedBooksCount = member.borrowedBooks.getItems().filter(
-          borrow => !borrow.returnedAt
-        ).length;
+        const borrowedBooksCount = member.borrowedBooks
+          .getItems()
+          .filter((borrow) => !borrow.returnedAt).length;
 
         if (!(book.stock - borrowedBooksCount)) {
           throw new BadRequestException(null, ErrorCode.BookBorrowed);
@@ -170,8 +176,8 @@ export class MemberBooksBorrowedService {
         this.em.persistAndFlush(memberBorrowedBooks),
         shouldPenalize
           ? this.memberService.update(member.id, {
-            penalizedAt: dayjs().toDate(),
-          })
+              penalizedAt: dayjs().toDate(),
+            })
           : emptyPromise(),
       ]);
 

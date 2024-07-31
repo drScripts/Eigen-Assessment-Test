@@ -14,4 +14,4 @@ import { MemberBooksBorrowedModule } from '../member-books-borrowed/member-books
   providers: [BooksService],
   exports: [BooksService],
 })
-export class BooksModule { }
+export class BooksModule {}

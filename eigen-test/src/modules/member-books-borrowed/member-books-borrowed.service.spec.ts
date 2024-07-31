@@ -73,7 +73,11 @@ describe('BorrowService', () => {
   it('should allow a member to borrow a book if all conditions are met', async () => {
     const { '0': member, '1': book } = await Promise.all([
       memberService.create({ name: 'John Doe' }),
-      bookService.create({ author: 'Book Title', title: 'Author Name', stock: 1 }),
+      bookService.create({
+        author: 'Book Title',
+        title: 'Author Name',
+        stock: 1,
+      }),
     ]);
 
     await service.borrowBook(member.id, [book.id]);
@@ -96,9 +100,21 @@ describe('BorrowService', () => {
       '3': book3,
     } = await Promise.all([
       memberService.create({ name: 'Jane Doe' }),
-      bookService.create({ title: 'Book Title 1', author: 'Author Name 1', stock: 1 }),
-      bookService.create({ title: 'Book Title 2', author: 'Author Name 2', stock: 1 }),
-      bookService.create({ title: 'Book Title 3', author: 'Author Name 3', stock: 1 }),
+      bookService.create({
+        title: 'Book Title 1',
+        author: 'Author Name 1',
+        stock: 1,
+      }),
+      bookService.create({
+        title: 'Book Title 2',
+        author: 'Author Name 2',
+        stock: 1,
+      }),
+      bookService.create({
+        title: 'Book Title 3',
+        author: 'Author Name 3',
+        stock: 1,
+      }),
     ]);
 
     await service.borrowBook(member.id, [book2.id, book3.id]);
@@ -109,18 +125,16 @@ describe('BorrowService', () => {
   });
 
   it('should not allow borrowing a book that is already borrowed by another member', async () => {
-    const {
-      '0': member1,
-      '1': member2,
-      '2': book,
-    } = await Promise.all([
+    const { '0': member1, '1': book } = await Promise.all([
       memberService.create({ name: 'Alice' }),
-      memberService.create({ name: 'Bob' }),
-      bookService.create({ title: 'Book Title', author: 'Author Name', stock: 1 }),
+      bookService.create({
+        title: 'Book Title',
+        author: 'Author Name',
+        stock: 1,
+      }),
     ]);
 
     await service.borrowBook(member1.id, [book.id]);
-
   });
 
   it('should not allow a penalized member to borrow a book', async () => {
@@ -130,7 +144,7 @@ describe('BorrowService', () => {
     const book = await bookService.create({
       title: 'Book Title',
       author: 'Author Name',
-      stock: 1
+      stock: 1,
     });
 
     await expect(service.borrowBook(member.id, [book.id])).rejects.toThrow(
@@ -143,7 +157,11 @@ describe('BorrowService', () => {
     it('should successfully return a borrowed book', async () => {
       const { '0': member, '1': book } = await Promise.all([
         memberService.create({ name: 'John Doe' }),
-        bookService.create({ author: 'Book Title', title: 'Author Name', stock: 1 }),
+        bookService.create({
+          author: 'Book Title',
+          title: 'Author Name',
+          stock: 1,
+        }),
       ]);
 
       await service.borrowBook(member.id, [book.id]);
@@ -161,7 +179,11 @@ describe('BorrowService', () => {
     it('should apply a penalty if the book is returned after more than 7 days', async () => {
       const { '0': member, '1': book } = await Promise.all([
         memberService.create({ name: 'Jane Doe' }),
-        bookService.create({ title: 'Book Title', author: 'Author Name', stock: 1 }),
+        bookService.create({
+          title: 'Book Title',
+          author: 'Author Name',
+          stock: 1,
+        }),
       ]);
 
       await service.borrowBook(member.id, [book.id]);
@@ -194,7 +216,11 @@ describe('BorrowService', () => {
     it('should not return a book that was not borrowed by the member', async () => {
       const { '0': member, '1': book } = await Promise.all([
         memberService.create({ name: 'Charlie' }),
-        bookService.create({ title: 'Book Title', author: 'Author Name', stock: 1 }),
+        bookService.create({
+          title: 'Book Title',
+          author: 'Author Name',
+          stock: 1,
+        }),
       ]);
 
       const bookCodes = [book.id];
@@ -212,7 +238,11 @@ describe('BorrowService', () => {
       } = await Promise.all([
         memberService.create({ name: 'Alice' }),
         memberService.create({ name: 'Bob' }),
-        bookService.create({ title: 'Book Title', author: 'Author Name', stock: 1 }),
+        bookService.create({
+          title: 'Book Title',
+          author: 'Author Name',
+          stock: 1,
+        }),
       ]);
 
       await service.borrowBook(member1.id, [book.id]);

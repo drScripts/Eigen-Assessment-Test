@@ -7,4 +7,4 @@ export const createBookSchema = z.object({
   stock: z.number(),
 });
 
-export class CreateBookDto extends createZodDto(createBookSchema) { }
+export class CreateBookDto extends createZodDto(createBookSchema) {}

@@ -47,7 +47,7 @@ describe('BooksService', () => {
     const createBook: CreateBookDto = {
       author: 'J.K Rowling',
       title: 'Harry Potter',
-      stock: 1
+      stock: 1,
     };
 
     const book = await service.create(createBook);
@@ -61,7 +61,7 @@ describe('BooksService', () => {
     const createBook: CreateBookDto = {
       author: 'JK Rowling',
       title: 'Hally Potter',
-      stock: 1
+      stock: 1,
     };
 
     const book = await service.create(createBook);
@@ -83,7 +83,7 @@ describe('BooksService', () => {
     const createBook: CreateBookDto = {
       author: 'J.K Rowling',
       title: 'Harry Potter',
-      stock: 1
+      stock: 1,
     };
 
     const createdBook = await service.create(createBook);
@@ -103,14 +103,14 @@ describe('BooksService', () => {
     const createBook1: CreateBookDto = {
       author: 'J.K Rowling1',
       title: 'Harry Potter',
-      stock: 1
+      stock: 1,
     };
     await service.create(createBook1);
 
     const createBook2: CreateBookDto = {
       author: 'J.K Rowling2',
       title: 'Harry Potter',
-      stock: 1
+      stock: 1,
     };
     await service.create(createBook2);
 
@@ -123,7 +123,7 @@ describe('BooksService', () => {
     const createBook: CreateBookDto = {
       author: 'J.K Rowling',
       title: 'Harry Potter',
-      stock: 1
+      stock: 1,
     };
     const createdBook = await service.create(createBook);
     expect(createdBook.id).toBeDefined();

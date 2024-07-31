@@ -15,16 +15,18 @@ export class MembersService {
   constructor(
     private readonly memberRepository: MemberRepository,
     private readonly em: EntityManager,
-  ) { }
+  ) {}
 
   async find(): Promise<Array<Member>> {
     try {
-      const members = await this.memberRepository.find({}, {
-        populate: ['borrowedBooks']
-      });
+      const members = await this.memberRepository.find(
+        {},
+        {
+          populate: ['borrowedBooks'],
+        },
+      );
 
-
-      return members
+      return members;
     } catch (error) {
       this.#logger.fatal('failed to find', {
         error,
@@ -55,14 +57,17 @@ export class MembersService {
 
   async getById(id: string): Promise<Member> {
     try {
-      const member = await this.memberRepository.findOne({
-        id,
-      }, { populate: ['borrowedBooks'] });
+      const member = await this.memberRepository.findOne(
+        {
+          id,
+        },
+        { populate: ['borrowedBooks'] },
+      );
       if (!member) {
         throw new NotFoundException(ErrorCode.MemberNotFound);
       }
 
-      return member
+      return member;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -81,10 +86,10 @@ export class MembersService {
   async update(id: string, input: UpdateMemberDto): Promise<Member> {
     try {
       const member = await this.memberRepository.findOne({
-        id
-      })
+        id,
+      });
       if (!member) {
-        throw new NotFoundException(ErrorCode.MemberNotFound)
+        throw new NotFoundException(ErrorCode.MemberNotFound);
       }
 
       if (input.penalizedAt) {
@@ -99,7 +104,6 @@ export class MembersService {
 
       return member;
     } catch (error) {
-
       if (error instanceof NotFoundException) {
         throw error;
       }

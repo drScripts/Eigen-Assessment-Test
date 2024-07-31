@@ -29,9 +29,9 @@ export class Member {
 
   @ApiProperty()
   @Property({ nullable: true })
-  borrowedBooksCount: number
+  borrowedBooksCount: number;
 
-  @OneToMany(() => MemberBooksBorrowed, borrowedBook => borrowedBook.member)
+  @OneToMany(() => MemberBooksBorrowed, (borrowedBook) => borrowedBook.member)
   borrowedBooks = new Collection<MemberBooksBorrowed>(this);
 
   @ApiProperty({

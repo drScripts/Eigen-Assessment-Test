@@ -22,23 +22,25 @@ import { ZodValidationPipe } from '../../shared/pipes/zodValidationPipe';
 @Controller('books')
 @ApiTags('books')
 export class BooksController {
-  constructor(
-    private readonly booksService: BooksService,
-  ) { }
+  constructor(private readonly booksService: BooksService) {}
 
   @Get()
   @ApiResponse(Book, true)
   @HttpCode(HttpStatus.OK)
   async find(): Promise<DataResponse<Array<Book>>> {
-    const books = await this.booksService.find()
+    const books = await this.booksService.find();
 
-    const newBooks = books.map(book => {
+    const newBooks = books.map((book) => {
       // Count the borrowed books where returnedAt is null
-      const borrowedBooksCount = book.borrowedBooks.getItems().filter(
-        borrow => !borrow.returnedAt
-      ).length;
+      const borrowedBooksCount = book.borrowedBooks
+        .getItems()
+        .filter((borrow) => !borrow.returnedAt).length;
 
-      const newBook: Book = { ...book, borrowedBooks: undefined, available: book.stock - borrowedBooksCount }
+      const newBook: Book = {
+        ...book,
+        borrowedBooks: undefined,
+        available: book.stock - borrowedBooksCount,
+      };
       return newBook;
     });
 
@@ -62,12 +64,14 @@ export class BooksController {
   async getById(@Param('id') id: string): Promise<DataResponse<Book>> {
     const book = await this.booksService.getById(id);
 
+    const borrowedBooksCount = book.borrowedBooks
+      .getItems()
+      .filter((borrow) => !borrow.returnedAt).length;
 
-    const borrowedBooksCount = book.borrowedBooks.getItems().filter(
-      borrow => !borrow.returnedAt
-    ).length;
-
-    const newBook: Book = { ...book, available: book.stock - borrowedBooksCount }
+    const newBook: Book = {
+      ...book,
+      available: book.stock - borrowedBooksCount,
+    };
 
     return new DataResponse(newBook);
   }

@@ -33,9 +33,9 @@ export class Book {
 
   @ApiProperty()
   @Property({ nullable: true })
-  available: number
+  available: number;
 
-  @OneToMany(() => MemberBooksBorrowed, borrowedBook => borrowedBook.book)
+  @OneToMany(() => MemberBooksBorrowed, (borrowedBook) => borrowedBook.book)
   borrowedBooks = new Collection<MemberBooksBorrowed>(this);
 
   @Property({ onCreate: () => new Date(), fieldName: 'created_at' })
@@ -55,10 +55,10 @@ export class Book {
   [EntityRepositoryType]?: BookRepository;
 
   constructor(title: string, author: string, stock: number) {
-    this.id = uuidv4()
+    this.id = uuidv4();
     this.title = title;
     this.author = author;
     this.stock = stock;
-    this.available = stock
+    this.available = stock;
   }
 }
