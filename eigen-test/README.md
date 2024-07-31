@@ -97,7 +97,7 @@ To set up and run the application:
 
    Use the following credentials to access the documentation:
    - **Username:** eigen
-   - **Password:** eigen_password
+   - **Password:** eigen_api
 
 7. **Interact with the API:**
 

@@ -8,6 +8,7 @@ export enum ErrorCode {
   BorrowBookLimit = 4002,
   MemberPenelized = 4003,
   BookBorrowed = 4004,
+  AlreadyBorrowed = 4005,
 
   InternalServerError = 5001,
   InternalServerDatabaseError = 5002,

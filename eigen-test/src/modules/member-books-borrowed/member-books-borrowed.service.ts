@@ -7,7 +7,7 @@ import { ErrorCode } from '../../shared/exceptions/ErrorCode';
 import { BooksService } from '../books/books.service';
 import { MembersService } from '../members/members.service';
 import dayjs from 'dayjs';
-import { emptyPromise } from '../../shared/libs/libs';
+import { emptyPromise, isArrayUnique } from '../../shared/libs/libs';
 import { NotFoundException } from '../../shared/exceptions/NotFoundException';
 import { InternalServerErrorException } from '../../shared/exceptions/InternalServerErrorException';
 import { FilterMemberBooksBorrowed } from './dto/filter-member-books-borrowed.dto';
@@ -21,7 +21,7 @@ export class MemberBooksBorrowedService {
     private readonly bookService: BooksService,
     private readonly memberService: MembersService,
     private readonly em: EntityManager,
-  ) {}
+  ) { }
 
   async find(
     filter: FilterMemberBooksBorrowed,
@@ -54,6 +54,13 @@ export class MemberBooksBorrowedService {
       );
     }
 
+    if (!isArrayUnique(bookIds)) {
+      throw new BadRequestException(
+        'book ids should not be duplicated',
+        ErrorCode.BadRequestBody,
+      );
+    }
+
     try {
       const {
         '0': memberBorrowedBooks,
@@ -69,8 +76,9 @@ export class MemberBooksBorrowedService {
 
       if (
         memberBorrowedBooks.length >= 2 ||
-        books.length >= 2 ||
-        bookIds.length >= 2
+        books.length > 2 ||
+        bookIds.length > 2 ||
+        memberBorrowedBooks.length + bookIds.length > 2
       ) {
         throw new BadRequestException(null, ErrorCode.BorrowBookLimit);
       }
@@ -83,9 +91,15 @@ export class MemberBooksBorrowedService {
       }
 
       for (const book of books) {
+        const bookAlreadyBooked = memberBorrowedBooks.find(b => b.book.id == book.id)
+        if (bookAlreadyBooked) {
+          throw new BadRequestException(null, ErrorCode.AlreadyBorrowed);
+        }
+
         const borrowedBooksCount = member.borrowedBooks
           .getItems()
           .filter((borrow) => !borrow.returnedAt).length;
+
 
         if (!(book.stock - borrowedBooksCount)) {
           throw new BadRequestException(null, ErrorCode.BookBorrowed);
@@ -176,8 +190,8 @@ export class MemberBooksBorrowedService {
         this.em.persistAndFlush(memberBorrowedBooks),
         shouldPenalize
           ? this.memberService.update(member.id, {
-              penalizedAt: dayjs().toDate(),
-            })
+            penalizedAt: dayjs().toDate(),
+          })
           : emptyPromise(),
       ]);
 
