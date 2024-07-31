@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  service:
+    image: eigentest:latest
+    build: 
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      - NODE_ENV=production
+      - DB_USER=eigen_user
+      - DB_PASSWORD=eigen_password
+      - DB_NAME=eigen_db
+      - DB_HOST=mysql
+      - DB_PORT=3306
+
+  mysql:
+    image: mysql:8.0
+    container_name: eigen_mysql_server
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: user_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: eigen_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
